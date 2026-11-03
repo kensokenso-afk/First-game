@@ -12,8 +12,11 @@ export default class GameScene extends Phaser.Scene {
 
     this.bg = new Background(this);
 
-    // Tanah
-    const ground = this.add.rectangle(w / 2, h - 8, w, 16, 0x2d6a4f);
+    // Tanah = pijakan tak terlihat di atas dek kapal. Sisi atas di y = h - 40,
+    // sama dengan dek di Background.js. Dek digambar oleh Background, bukan di sini.
+    const DEK_TINGGI = 40;
+    const ground = this.add.rectangle(w / 2, h - DEK_TINGGI / 2, w, DEK_TINGGI, 0x5d4037);
+    ground.setVisible(false);
     this.physics.add.existing(ground, true);
 
     // Tekstur pemain sementara (pixel 12x16), ganti dengan sprite asli nanti
@@ -23,12 +26,16 @@ export default class GameScene extends Phaser.Scene {
     g.generateTexture('player', 12, 16);
     g.destroy();
 
-    this.player = this.physics.add.sprite(40, h - 40, 'player');
+    // Muncul sedikit di atas dek, lalu jatuh dan menapak
+    this.player = this.physics.add.sprite(40, h - DEK_TINGGI - 20, 'player');
     this.player.setCollideWorldBounds(true);
     this.physics.add.collider(this.player, ground);
 
     this.cursors = this.input.keyboard.createCursorKeys();
     this.spaceKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
+
+    // Status lompat tekan sebelumnya, agar satu tekanan = satu lompatan
+    this.jumpHeldBefore = false;
 
     this.add.text(4, 4, 'First Game', { fontFamily: 'monospace', fontSize: '8px', color: '#ffffff' })
       .setDepth(10);
@@ -44,7 +51,7 @@ export default class GameScene extends Phaser.Scene {
     const p = this.player;
     let left = this.cursors.left.isDown;
     let right = this.cursors.right.isDown;
-    let jump = this.cursors.up.isDown || this.spaceKey.isDown;
+    let jumpHeld = this.cursors.up.isDown || this.spaceKey.isDown;
 
     // Kontrol sentuh untuk HP: layar dibagi 3 bagian
     const ptr = this.input.activePointer;
@@ -52,13 +59,17 @@ export default class GameScene extends Phaser.Scene {
       const third = this.scale.width / 3;
       if (ptr.x < third) left = true;
       else if (ptr.x > third * 2) right = true;
-      else jump = true;
+      else jumpHeld = true;
     }
 
     if (left) p.setVelocityX(-speed);
     else if (right) p.setVelocityX(speed);
     else p.setVelocityX(0);
 
-    if (jump && p.body.blocked.down) p.setVelocityY(-260);
+    // Lompat hanya saat tombol BARU ditekan (bukan ditahan)
+    const jumpPressed = jumpHeld && !this.jumpHeldBefore;
+    this.jumpHeldBefore = jumpHeld;
+
+    if (jumpPressed && p.body.blocked.down) p.setVelocityY(-260);
   }
 }
