@@ -12,8 +12,9 @@ export default class GameScene extends Phaser.Scene {
 
     this.bg = new Background(this);
 
-    // Tanah
-    const ground = this.add.rectangle(w / 2, h - 8, w, 16, 0x2d6a4f);
+    // Tanah = dek kayu kapal. Sisi atas di y = h - 40, sama dengan dek di Background.js
+    const DEK_TINGGI = 40;
+    const ground = this.add.rectangle(w / 2, h - DEK_TINGGI / 2, w, DEK_TINGGI, 0x5d4037);
     this.physics.add.existing(ground, true);
 
     // Tekstur pemain sementara (pixel 12x16), ganti dengan sprite asli nanti
@@ -23,7 +24,8 @@ export default class GameScene extends Phaser.Scene {
     g.generateTexture('player', 12, 16);
     g.destroy();
 
-    this.player = this.physics.add.sprite(40, h - 40, 'player');
+    // Muncul sedikit di atas dek, lalu jatuh dan menapak
+    this.player = this.physics.add.sprite(40, h - DEK_TINGGI - 20, 'player');
     this.player.setCollideWorldBounds(true);
     this.physics.add.collider(this.player, ground);
 
