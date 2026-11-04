@@ -4,11 +4,21 @@ Setiap AI WAJIB memperbarui file ini di akhir sesi. Entri terbaru di paling atas
 
 ## Status saat ini
 - Latar belakang kapal bajak laut (perspektif 3/4) sudah diimplementasikan.
-- `ground` sekarang tak terlihat (hanya pijakan fisika), sisi atas di `h - 40`. Dek dan garis papan digambar `Background.js`.
-- Lompat: satu lompatan per tekanan (bug auto-hop sudah diperbaiki).
+- `ground` tak terlihat (hanya pijakan fisika), sisi atas di `h - 40`. Dek dan garis papan digambar `Background.js`.
+- Lompat: satu lompatan per tekanan.
 - Pemain masih kotak sementara.
+- Tim AI: Claude, Gemini CLI, Codex, GitHub Copilot, ChatGPT. Pembagian tugas ada di `TASKS.md` (menunggu persetujuan pengguna lewat PR).
 
 ## Log sesi
+### 2026-11-04 — Claude (pembagian tugas 5 AI)
+- Dikerjakan: `TASKS.md` baru (4 fase, pemilik per tugas, kontrak antar-area, perintah awal tiap AI), `AGENTS.md` diperbarui (tabel area, prefix branch `codex/` dan `copilot/`, struktur folder).
+- Branch: `claude/pembagian-tugas-codex`.
+- Belum selesai: menunggu pengguna menggabungkan PR. Setelah itu tiap AI mulai Fase 1.
+- Langkah berikutnya:
+  - Pengguna: gabung PR, tempel perintah awal ke Codex, Copilot, ChatGPT.
+  - Claude: `claude/level-1`. Gemini: `gemini/sprite-pemain`. Codex: `codex/hud-skor`.
+- Branch lama `claude/pembagian-tugas` sudah usang (dibuat sebelum PR sebelumnya digabung); abaikan.
+
 ### 2026-11-03 — Claude (ground transparan + perbaikan lompat)
 - Dikerjakan: `src/scenes/GameScene.js`. `ground` dibuat tak terlihat (`setVisible(false)`), body fisika tetap. Lompat kini memakai deteksi baru-ditekan (`jumpHeldBefore`), berlaku untuk keyboard dan sentuhan.
 - Branch: `claude/ground-dek-kayu` (dibuat dari `gemini/pirate-ship-bg`, jadi memuat commit Gemini juga).
@@ -37,10 +47,10 @@ Setiap AI WAJIB memperbarui file ini di akhir sesi. Entri terbaru di paling atas
   - Claude: tambah mekanik game setelah pengguna menentukan jenis game.
 
 ## Permintaan antar-AI
-- ~~`[Gemini -> Claude]` warna `ground` jadi coklat kayu~~ — diganti: `ground` kini tak terlihat, dek dari Background (2026-11-03).
-- ~~`[Gemini -> Claude]` posisi `ground` di `h - 40`~~ — selesai (2026-11-03).
+(Tulis di sini jika perlu mengubah area AI lain. Format: `[dari -> ke] permintaan`)
 
 ## Keputusan penting
 - Engine: Phaser 3 (dipilih pengguna).
-- Jenis game: platformer (dikonfirmasi pengguna).
+- Jenis game: platformer bertema bajak laut (dikonfirmasi pengguna).
 - Lompat: satu lompatan per tekanan (dipilih pengguna).
+- Tim AI: Claude, Gemini CLI, Codex, GitHub Copilot, ChatGPT (ditambahkan pengguna).
