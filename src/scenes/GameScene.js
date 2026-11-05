@@ -2,7 +2,10 @@ import Background from '../background/Background.js';
 import Player from '../entities/Player.js';
 import Kepiting from '../entities/Kepiting.js';
 import { buatTekstur } from '../entities/tekstur.js';
-import { ANGKA } from '../entities/angka.js';
+import { ANGKA, hitungSkor, hitungNyawa } from '../config/balance.js';
+
+// Sprite pixel dari Gemini (assets/). Kunci sama dengan placeholder di tekstur.js.
+const SPRITE = ['player', 'peti', 'papan', 'koin', 'kepiting', 'bendera'];
 
 // Area: Claude (logika game). Latar belakang ada di src/background/ (area Gemini).
 // Level 1: dek kapal bajak laut. Tujuan: ambil koin, injak kepiting, capai bendera.
@@ -11,17 +14,21 @@ export default class GameScene extends Phaser.Scene {
     super('GameScene');
   }
 
+  preload() {
+    SPRITE.forEach((kunci) => this.load.image(kunci, `assets/${kunci}.png`));
+  }
+
   create() {
     const h = this.scale.height;
     const lebar = ANGKA.lebarLevel;
     const dekAtas = h - 40; // sama dengan dek di Background.js
 
+    // Placeholder hanya dibuat untuk sprite yang gagal dimuat
     buatTekstur(this);
     this.berhenti = false;
 
-    // Latar tetap di layar walau kamera bergerak
+    // Latar mengatur parallax dan scroll factor sendiri (area Gemini)
     this.bg = new Background(this);
-    this.bg.layers.forEach((l) => l.sprite.setScrollFactor(0));
 
     this.physics.world.setBounds(0, 0, lebar, h);
     this.cameras.main.setBounds(0, 0, lebar, h);
@@ -100,7 +107,7 @@ export default class GameScene extends Phaser.Scene {
   }
 
   tambahSkor(n) {
-    this.registry.set('skor', this.registry.get('skor') + n);
+    this.registry.set('skor', hitungSkor(this.registry.get('skor'), n));
   }
 
   ambilKoin(koin) {
@@ -118,7 +125,7 @@ export default class GameScene extends Phaser.Scene {
       return;
     }
     if (pemain.kena(this.time.now, musuh.x)) {
-      const sisa = this.registry.get('nyawa') - 1;
+      const sisa = hitungNyawa(this.registry.get('nyawa'), -1);
       this.registry.set('nyawa', sisa);
       if (sisa <= 0) this.gameOver();
     }
