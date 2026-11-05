@@ -9,26 +9,26 @@ Baca `AGENTS.md` dan `HANDOFF.md` dulu. Satu tugas = satu branch `<ai>/<topik>`.
 | Gemini CLI | Grafis pixel, animasi, latar | `assets/`, `src/background/` | `gemini/` |
 | Codex | Antarmuka, sistem skor/nyawa, tes, konfigurasi | `src/ui/`, `src/systems/`, `src/config/`, `tests/` | `codex/` |
 | GitHub Copilot | Dokumentasi, review PR, audit bug | `README.md`, `docs/teknis/` | `copilot/` |
-| ChatGPT (web, di luar repo) | Ide desain, teks, tabel angka | `docs/desain/` (ditempel pengguna) | — |
+| ChatGPT (konektor GitHub) | Ide desain, teks, tabel angka | `docs/desain/` | `chatgpt/` |
 
-Copilot hanya melapor bug di `HANDOFF.md`; perbaikan kode dikerjakan pemilik area. Pengecualian: salah ketik dan komentar.
+Copilot hanya melapor bug di `HANDOFF.md`; perbaikan kode dikerjakan pemilik area. Pengecualian: salah ketik dan komentar. ChatGPT tidak mengubah kode di `src/` atau `assets/`.
 
 ## Kontrak antar-area (agar kode saling cocok)
 - **Skor dan nyawa**: disimpan di `this.registry` dengan kunci `skor` dan `nyawa`. Claude yang mengisi dan mengubahnya. Codex membaca dan menampilkannya.
-- **HUD**: kelas `HudScene` di `src/ui/HudScene.js` (Codex). Claude mendaftarkan dan menjalankannya dari `GameScene` (`this.scene.launch('HudScene')`).
+- **HUD**: kelas `HudScene` di `src/ui/HudScene.js` (Codex). Claude menjalankannya dari `GameScene` (`this.scene.run('HudScene')`); `main.js` memuatnya otomatis jika berkasnya ada.
 - **Sprite**: Gemini mendaftar tiap berkas di `assets/README.md`: nama berkas, ukuran frame, nama animasi. Claude yang memasangnya ke kode.
-- **Angka game** (kecepatan, lompat, skor per koin): ada di `src/config/balance.js` (Codex). Claude membaca dari sana, tidak menulis angka langsung di scene.
+- **Angka game** (kecepatan, lompat, skor per koin): ada di `src/config/balance.js` (Codex). Sementara di `src/entities/angka.js`. Claude membaca dari sana, tidak menulis angka langsung di scene.
 - Dua AI tidak boleh mengerjakan file yang sama di waktu yang sama.
 
-## Fase 1 — Dasar platformer (mulai sekarang)
-- [ ] Claude: level 1 di dek kapal (platform dari peti dan tong, kamera mengikuti). Isi `registry` `skor` dan `nyawa`, jalankan `HudScene`. Branch `claude/level-1`.
-- [ ] Gemini CLI: sprite pemain bajak laut 16x16 (diam 1 frame, jalan 4, lompat 1) dan ubin dek, peti, tong. Branch `gemini/sprite-pemain`.
+## Fase 1 — Dasar platformer
+- [x] Claude: level 1 di dek kapal (platform dari peti dan papan, kamera mengikuti). Isi `registry` `skor` dan `nyawa`, jalankan `HudScene`. Branch `claude/level-1`.
+- [ ] Gemini CLI: sprite pemain bajak laut (diam, jalan, lompat) dan ubin dek, peti, tong. Branch `gemini/sprite-pemain`.
 - [ ] Codex: `HudScene` (skor dan nyawa, baca dari `registry`), `src/config/balance.js`, tes dasar logika skor di `tests/`. Branch `codex/hud-skor`.
 - [ ] Copilot: perbarui `README.md` (cara jalan, struktur folder, daftar AI dan areanya). Review PR Fase 1.
-- [ ] ChatGPT: 5 ide level bajak laut, 4 musuh (nama, perilaku, kelemahan), 3 benda koleksi. Pengguna pilih lalu simpan di `docs/desain/`.
+- [ ] ChatGPT: 5 ide level bajak laut, 4 musuh (nama, perilaku, kelemahan), 3 benda koleksi, tulis di `docs/desain/` lewat PR. Pengguna memilih ide yang dipakai.
 
 ## Fase 2 — Musuh dan hadiah
-- [ ] Claude: musuh jalan bolak-balik, injak untuk kalahkan, koin/harta, kena musuh = nyawa berkurang.
+- [x] Claude: musuh kepiting jalan bolak-balik, injak untuk kalahkan, koin, kena musuh = nyawa berkurang (di `claude/level-1`). Musuh jenis lain menyusul sesuai ide ChatGPT.
 - [ ] Gemini CLI: sprite musuh, koin, efek kecil (debu, kilau).
 - [ ] Codex: `src/systems/` untuk skor dan nyawa, kondisi game over saat nyawa habis, tes.
 - [ ] Copilot: audit bug Fase 2, laporkan di `HANDOFF.md`.
@@ -56,6 +56,6 @@ Copilot hanya melapor bug di `HANDOFF.md`; perbaikan kode dikerjakan pemilik are
 6. Jangan commit rahasia (API key, token).
 
 ## Perintah awal (tempel ke tiap AI)
-- **Codex**: "Baca AGENTS.md, TASKS.md, HANDOFF.md. Kamu Codex. Kerjakan tugas Codex di Fase 1 pada branch codex/hud-skor. Ikuti kontrak antar-area."
+- **Codex**: "Baca AGENTS.md, TASKS.md, HANDOFF.md. Kamu Codex. Kerjakan permintaan [Claude -> Codex] di HANDOFF.md dan tugas Codex di Fase 1 pada branch codex/hud-skor. Ikuti kontrak antar-area."
 - **Copilot**: "Baca AGENTS.md, TASKS.md, HANDOFF.md. Kamu Copilot. Kerjakan tugas Copilot di Fase 1 pada branch copilot/readme. Jangan ubah kode logika."
-- **ChatGPT**: "Kita bikin platformer pixel bertema bajak laut (Phaser 3, layar 320x180, versi HP). Kerjakan tugas ChatGPT Fase 1: 5 ide level, 4 musuh, 3 benda koleksi. Jawab singkat, bahasa Indonesia."
+- **ChatGPT**: "Repo: kensokenso-afk/First-game. Baca AGENTS.md, TASKS.md, HANDOFF.md. Kamu ChatGPT. Area kamu HANYA docs/desain/. Buat branch chatgpt/ide-level dari main, tulis ide level, musuh, koleksi, dan tabel angka di docs/desain/, tambah entri di HANDOFF.md, lalu buka pull request ke main. Jangan commit langsung ke main."

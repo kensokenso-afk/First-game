@@ -1,4 +1,4 @@
-# AGENTS.md — Aturan Bersama (Claude, Gemini CLI, Codex, Copilot)
+# AGENTS.md — Aturan Bersama (Claude, Gemini CLI, Codex, Copilot, ChatGPT)
 
 File ini dibaca oleh SEMUA AI yang bekerja di repo ini. Ikuti aturan di sini sebelum mengubah kode.
 
@@ -13,9 +13,10 @@ File ini dibaca oleh SEMUA AI yang bekerja di repo ini. Ikuti aturan di sini seb
 ## Alur kerja wajib
 1. Mulai sesi: `git pull`, lalu baca `HANDOFF.md` dan `TASKS.md`.
 2. Kerjakan HANYA area tugas milik Anda (lihat pembagian di bawah).
-3. Buat branch sendiri: `claude/<topik>`, `gemini/<topik>`, `codex/<topik>`, atau `copilot/<topik>`. Jangan commit langsung ke `main`.
-4. Selesai sesi: commit kecil dan jelas, push, lalu perbarui `HANDOFF.md`.
+3. Buat branch sendiri: `claude/<topik>`, `gemini/<topik>`, `codex/<topik>`, `copilot/<topik>`, atau `chatgpt/<topik>`. Jangan commit langsung ke `main`.
+4. Selesai sesi: commit kecil dan jelas, push, buka pull request ke `main`, lalu perbarui `HANDOFF.md`.
 5. Jangan menimpa atau menulis ulang file milik AI lain tanpa tercatat di `HANDOFF.md`.
+6. Hanya pengguna yang menekan Merge.
 
 ## Pembagian tugas
 Rincian per fase ada di `TASKS.md`.
@@ -26,15 +27,15 @@ Rincian per fase ada di `TASKS.md`.
 | Grafis pixel, animasi latar, aset | Gemini CLI | `assets/`, `src/background/` |
 | Antarmuka (HUD, menu), skor/nyawa, tes, angka game | Codex | `src/ui/`, `src/systems/`, `src/config/`, `tests/` |
 | Dokumentasi, review PR, audit bug | GitHub Copilot | `README.md`, `docs/teknis/` |
-| Ide desain, teks (lewat pengguna) | ChatGPT | `docs/desain/` |
+| Ide desain, teks, tabel angka (lewat konektor GitHub) | ChatGPT | `docs/desain/` |
 | Catatan serah-terima | Siapa saja | `HANDOFF.md` |
 
-Jika perlu mengubah area AI lain: tulis permintaannya di bagian "Permintaan antar-AI" pada `HANDOFF.md`, jangan langsung diubah.
+Jika perlu mengubah area AI lain: tulis permintaannya di bagian "Permintaan antar-AI" pada `HANDOFF.md`, jangan langsung diubah. ChatGPT tidak mengubah kode di `src/` maupun `assets/`.
 
 ## Kontrak antar-area
 - Skor dan nyawa: `this.registry` dengan kunci `skor` dan `nyawa`. Claude mengisi, Codex menampilkan.
-- HUD: `src/ui/HudScene.js` (Codex), dijalankan dari `GameScene` (Claude).
-- Angka game: `src/config/balance.js` (Codex), dibaca oleh kode Claude.
+- HUD: `src/ui/HudScene.js` (Codex), dijalankan dari `GameScene` (Claude) dengan `this.scene.run('HudScene')`. `main.js` memuatnya otomatis jika berkasnya ada.
+- Angka game: `src/config/balance.js` (Codex), dibaca oleh kode Claude. Sementara ada di `src/entities/angka.js`.
 - Sprite: didaftar Gemini di `assets/README.md` (nama berkas, ukuran frame, nama animasi), dipasang Claude.
 
 ## Struktur
@@ -49,7 +50,7 @@ src/systems/          # skor, nyawa, simpan skor
 src/config/           # angka game (balance)
 assets/               # gambar/suara
 tests/                # tes
-docs/                 # catatan desain dan teknis
+docs/                 # catatan desain (desain/) dan teknis (teknis/)
 ```
 
 ## Gaya kode
