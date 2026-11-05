@@ -1,4 +1,4 @@
-import { ANGKA } from './angka.js';
+import { ANGKA } from '../config/balance.js';
 
 // Area: Claude. Musuh kepiting: jalan bolak-balik di antara dua batas.
 export default class Kepiting extends Phaser.Physics.Arcade.Sprite {

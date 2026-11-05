@@ -1,4 +1,4 @@
-import { ANGKA } from './angka.js';
+import { ANGKA } from '../config/balance.js';
 
 // Area: Claude. Pemain: gerak, lompat satu kali per tekanan, terpental saat kena musuh.
 export default class Player extends Phaser.Physics.Arcade.Sprite {
