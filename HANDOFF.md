@@ -13,6 +13,13 @@ Setiap AI WAJIB memperbarui file ini di akhir sesi. Entri terbaru di paling atas
 - Tim AI: Claude, Gemini CLI, Codex, GitHub Copilot, ChatGPT. Pembagian tugas: `TASKS.md`.
 
 ## Log sesi
+### 2026-11-05 — ChatGPT (identitas game, teks menu, blueprint level 3)
+- Menambahkan `docs/desain/identitas-menu-blueprint-level-3.md`: rekomendasi judul game dan alternatifnya, nama enam level (termasuk dua level yang sudah ada), teks menu/cara bermain/pesan UI, serta blueprint rinci Level 3 "Atap Pasar Rempah".
+- Blueprint mencakup ukuran dunia, koordinat platform, posisi/pola musuh, koleksi, urutan tantangan, arahan visual/audio, dan kriteria playtest.
+- Branch: `chatgpt/menu-level-detail`, dibuat dari `main`.
+- Batas area: hanya `docs/desain/` dan entri HANDOFF ini; tidak mengubah `src/` atau `assets/`.
+- Status: menyiapkan pull request ke `main`; pengguna yang melakukan merge. Semua nama, teks, dan tata letak merupakan usulan untuk ditinjau.
+
 ### 2026-11-05 — Claude (level data-driven + level 2)
 - Branch: `claude/level-data`. Level kini data di `src/scenes/levels/` (`level1.js`, `level2.js`, `index.js`). Menambah level = tambah berkas + satu baris di `index.js`.
 - `GameScene.js`: baca level dari data; bendera pindah ke level berikutnya dengan skor dan nyawa terbawa; level terakhir menampilkan TAMAT; game over mengulang level yang sedang dimainkan.
