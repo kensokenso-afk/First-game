@@ -6,7 +6,13 @@ import { ANGKA, hitungSkor, hitungNyawa } from '../config/balance.js';
 import { DAFTAR_LEVEL } from './levels/index.js';
 
 // Sprite pixel dari Gemini (assets/). Kunci sama dengan placeholder di tekstur.js.
+// 'permata' dan 'hati' belum ada PNG-nya: sementara memakai placeholder kode.
+// Setelah Gemini menambahkan PNG, tambahkan kuncinya ke daftar ini.
 const SPRITE = ['player', 'peti', 'papan', 'koin', 'kepiting', 'bendera'];
+
+// Angka koleksi baru. Menunggu Codex menambah ke balance.js; nilai cadangan dari docs/desain.
+const SKOR_PERMATA = ANGKA.skorPermata ?? 50;
+const NYAWA_HATI = ANGKA.nyawaHati ?? 1;
 
 // Area: Claude (logika game). Latar belakang ada di src/background/ (area Gemini).
 // Tujuan tiap level: ambil koin, injak kepiting, capai bendera.
@@ -57,6 +63,8 @@ export default class GameScene extends Phaser.Scene {
     this.physics.add.collider(this.musuh, this.pijakan);
 
     this.physics.add.overlap(this.player, this.koin, (p, k) => this.ambilKoin(k));
+    this.physics.add.overlap(this.player, this.permata, (p, b) => this.ambilPermata(b));
+    this.physics.add.overlap(this.player, this.hati, (p, b) => this.ambilHati(b));
     this.physics.add.overlap(this.player, this.musuh, (p, m) => this.temuMusuh(p, m));
     this.physics.add.overlap(this.player, this.bendera, () => this.selesaiLevel());
 
@@ -92,7 +100,15 @@ export default class GameScene extends Phaser.Scene {
 
     this.koin = this.physics.add.staticGroup();
     d.koin.forEach(([x, y]) => this.koin.create(x, y, 'koin'));
-    this.tweens.add({ targets: this.koin.getChildren(), scaleX: 0.3, duration: 450, yoyo: true, repeat: -1 });
+
+    // Koleksi baru (opsional per level)
+    this.permata = this.physics.add.staticGroup();
+    (d.permata ?? []).forEach(([x, y]) => this.permata.create(x, y, 'permata'));
+    this.hati = this.physics.add.staticGroup();
+    (d.hati ?? []).forEach(([x, y]) => this.hati.create(x, y, 'hati'));
+
+    const berkilau = [...this.koin.getChildren(), ...this.permata.getChildren(), ...this.hati.getChildren()];
+    this.tweens.add({ targets: berkilau, scaleX: 0.3, duration: 450, yoyo: true, repeat: -1 });
 
     this.musuh = this.physics.add.group();
     d.musuh.forEach(([x, y, kiri, kanan]) => this.musuh.add(new Kepiting(this, x, y, kiri, kanan)));
@@ -107,6 +123,19 @@ export default class GameScene extends Phaser.Scene {
   ambilKoin(koin) {
     koin.destroy();
     this.tambahSkor(ANGKA.skorKoin);
+  }
+
+  ambilPermata(permata) {
+    permata.destroy();
+    this.tambahSkor(SKOR_PERMATA);
+  }
+
+  // Hati hanya diambil jika nyawa belum penuh; kalau penuh, tetap di tempat
+  ambilHati(hati) {
+    const nyawa = this.registry.get('nyawa');
+    if (nyawa >= ANGKA.nyawaMaksimum) return;
+    hati.destroy();
+    this.registry.set('nyawa', hitungNyawa(nyawa, NYAWA_HATI));
   }
 
   temuMusuh(pemain, musuh) {
