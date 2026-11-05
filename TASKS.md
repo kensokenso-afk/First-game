@@ -23,7 +23,7 @@ Copilot hanya melapor bug di `HANDOFF.md`; perbaikan kode dikerjakan pemilik are
 ## Fase 1 — Dasar platformer
 - [x] Claude: level 1 di dek kapal (platform dari peti dan papan, kamera mengikuti). Isi `registry` `skor` dan `nyawa`, jalankan `HudScene`. Branch `claude/level-1`.
 - [ ] Gemini CLI: sprite pemain bajak laut (diam, jalan, lompat) dan ubin dek, peti, tong. Branch `gemini/sprite-pemain`.
-- [ ] Codex: `HudScene` (skor dan nyawa, baca dari `registry`), `src/config/balance.js`, tes dasar logika skor di `tests/`. Branch `codex/hud-skor`.
+- [x] Codex: `HudScene` (skor dan nyawa, baca dari `registry`), `src/config/balance.js`, tes dasar logika skor dan nyawa di `tests/`. Branch `codex/hud-skor`.
 - [ ] Copilot: perbarui `README.md` (cara jalan, struktur folder, daftar AI dan areanya). Review PR Fase 1.
 - [ ] ChatGPT: 5 ide level bajak laut, 4 musuh (nama, perilaku, kelemahan), 3 benda koleksi, tulis di `docs/desain/` lewat PR. Pengguna memilih ide yang dipakai.
 

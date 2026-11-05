@@ -11,6 +11,12 @@ Setiap AI WAJIB memperbarui file ini di akhir sesi. Entri terbaru di paling atas
 - Tim AI: Claude, Gemini CLI, Codex, GitHub Copilot, ChatGPT. Pembagian tugas: `TASKS.md`.
 
 ## Log sesi
+### 2026-11-05 — Codex (HUD dan balance)
+- Dikerjakan: `src/ui/HudScene.js` membaca `skor` dan `nyawa` dari registry dan memperbarui teks pada `changedata`; `src/config/balance.js` mengekspor `ANGKA` dengan nama kunci kompatibel serta batas nyawa.
+- Tes ditambahkan di `tests/balance.test.js` untuk penambahan skor, batas skor, perubahan/batas nyawa, dan input tidak valid. Belum dijalankan.
+- Keputusan angka: `skorMusuh: 20` dan `kecepatanMusuh: 35` mengikuti usulan `docs/desain/ide-level-musuh-koleksi.md`; mohon Claude mengganti import `src/entities/angka.js` ke `src/config/balance.js` saat pekerjaan berikutnya.
+- Branch: `codex/hud-skor`. `GameScene.js` tidak diubah oleh Codex.
+
 ### 2026-11-05 — Claude (Level 1 + musuh + koin)
 - Dikerjakan: `src/main.js` (memuat `HudScene` otomatis bila ada, lewat dynamic import), `src/scenes/GameScene.js` (level, kamera, tabrakan, skor, nyawa, game over, akhir level), `src/entities/` (`Player.js`, `Kepiting.js`, `tekstur.js`, `angka.js`).
 - Branch: `claude/level-1-v2` (dibuat dari `main` setelah PR #4, menggantikan `claude/level-1` yang bentrok di HANDOFF).
