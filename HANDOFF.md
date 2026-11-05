@@ -3,16 +3,23 @@
 Setiap AI WAJIB memperbarui file ini di akhir sesi. Entri terbaru di paling atas.
 
 ## Status saat ini
-- Level 1 bisa dimainkan: dek kapal 960 piksel, kamera mengikuti, peti dan papan sebagai pijakan, 17 koin, 4 kepiting, bendera akhir.
+- Ada 2 level yang bisa dimainkan, datanya di `src/scenes/levels/`. Level 1 (Dek Kapal): 960 piksel, 17 koin, 4 kepiting. Level 2 (Pelabuhan Berkabut): 1100 piksel, 18 koin, 5 kepiting. Bendera memindahkan ke level berikutnya; skor dan nyawa terbawa.
 - Sprite pixel asli (Gemini) sudah dipasang: `player`, `peti`, `papan`, `koin`, `kepiting`, `bendera`. Placeholder kode (`src/entities/tekstur.js`) hanya dipakai jika PNG gagal dimuat.
 - HUD dari Codex (`src/ui/HudScene.js`) aktif. Angka game ada di `src/config/balance.js` (skor musuh 20, kecepatan musuh 35).
 - Latar parallax Gemini menyesuaikan gerakan kamera.
 - Tes: `npm test` (Node 20+). Belum dijalankan.
-- Injak kepiting = kalah. Kena samping = nyawa berkurang, terpental, kebal 1 detik. Nyawa 0 = game over, sentuh untuk ulang.
+- Injak kepiting = kalah. Kena samping = nyawa berkurang, terpental, kebal 1 detik. Nyawa 0 = game over, sentuh untuk ulang level yang sedang dimainkan.
 - Dokumen desain ChatGPT ada di `docs/desain/`.
 - Tim AI: Claude, Gemini CLI, Codex, GitHub Copilot, ChatGPT. Pembagian tugas: `TASKS.md`.
 
 ## Log sesi
+### 2026-11-05 — Claude (level data-driven + level 2)
+- Branch: `claude/level-data`. Level kini data di `src/scenes/levels/` (`level1.js`, `level2.js`, `index.js`). Menambah level = tambah berkas + satu baris di `index.js`.
+- `GameScene.js`: baca level dari data; bendera pindah ke level berikutnya dengan skor dan nyawa terbawa; level terakhir menampilkan TAMAT; game over mengulang level yang sedang dimainkan.
+- Level 2 "Pelabuhan Berkabut" (lebar 1100, 5 kepiting, 18 koin). Papan bergerak naik-turun belum ada (menyusul).
+- Catatan Gemini: `Background.update` sekarang dipanggil tanpa argumen delta (memang tidak dipakai).
+- Belum diuji di browser. Lebar level kini per level; `ANGKA.lebarLevel` hanya cadangan.
+
 ### 2026-11-05 — Claude (integrasi sprite, HUD, balance)
 - Branch: `claude/integrasi`, dibuat dari `gemini/sprite-pemain`. Berisi pekerjaan Gemini (sprite, latar) ditambah berkas Codex yang disalin dari `codex/hud-skor` (`src/ui/HudScene.js`, `src/config/balance.js`, `tests/balance.test.js`). Tujuannya satu PR saja, agar `HANDOFF.md` tidak bentrok antar branch. PR `gemini/sprite-pemain` dan `codex/hud-skor` tidak perlu digabung terpisah.
 - `GameScene.js`: `preload()` memuat 6 PNG dari `assets/`; memakai `ANGKA`, `hitungSkor`, `hitungNyawa` dari `balance.js`; panggilan `setScrollFactor(0)` pada latar dihapus karena `Background` sudah mengaturnya sendiri.
