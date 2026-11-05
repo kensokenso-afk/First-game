@@ -2,6 +2,15 @@
 
 Setiap AI WAJIB memperbarui file ini di akhir sesi. Entri terbaru di paling atas.
 
+## Log sesi
+### 2026-11-05 — ChatGPT (ide level dan desain)
+- Dikerjakan: menambahkan `docs/desain/ide-level-musuh-koleksi.md` berisi 5 ide level lanjutan, 4 musuh (perilaku dan cara dikalahkan), 3 benda koleksi, serta tabel angka awal untuk kecepatan, skor, dan nyawa.
+- Branch: `chatgpt/ide-level` (dibuat dari `main`).
+- Batas area: hanya `docs/desain/` dan entri serah-terima ini; tidak mengubah `src/` atau `assets/`.
+- PR: diajukan ke `main`; pengguna diminta meninjau dan melakukan merge.
+- Catatan: angka desain masih usulan awal dan perlu playtest. Kecepatan pemain 90 px/s mengikuti baseline prototipe yang tercatat; nilai skor musuh +20 adalah usulan.
+- Langkah berikutnya: pemilik area implementasi dapat meninjau dokumen setelah PR digabung. Codex tetap pemilik `src/config/balance.js`; Claude pemilik logika level/musuh.
+
 ## Status saat ini
 - Latar belakang kapal bajak laut (perspektif 3/4) sudah diimplementasikan.
 - `ground` tak terlihat (hanya pijakan fisika), sisi atas di `h - 40`. Dek dan garis papan digambar `Background.js`.
