@@ -44,4 +44,20 @@ export function buatTekstur(scene) {
     g.fillStyle(0xd32f2f, 1).fillRect(2, 1, 10, 8);
     g.fillStyle(0xffffff, 1).fillRect(5, 3, 3, 3);
   });
+
+  // Permata Laut (8x8): belah ketupat biru muda
+  buat('permata', 8, 8, (g) => {
+    g.fillStyle(0x00bcd4, 1)
+      .fillRect(3, 0, 2, 1).fillRect(2, 1, 4, 1).fillRect(1, 2, 6, 1).fillRect(0, 3, 8, 2)
+      .fillRect(1, 5, 6, 1).fillRect(2, 6, 4, 1).fillRect(3, 7, 2, 1);
+    g.fillStyle(0xb2ebf2, 1).fillRect(2, 2, 2, 1).fillRect(1, 3, 2, 1);
+  });
+
+  // Hati Bajak Laut (8x8): hati merah
+  buat('hati', 8, 8, (g) => {
+    g.fillStyle(0xe91e63, 1)
+      .fillRect(1, 1, 2, 1).fillRect(5, 1, 2, 1).fillRect(0, 2, 8, 2)
+      .fillRect(1, 4, 6, 1).fillRect(2, 5, 4, 1).fillRect(3, 6, 2, 1);
+    g.fillStyle(0xf8bbd0, 1).fillRect(1, 2, 1, 1);
+  });
 }

@@ -3,8 +3,9 @@
 Setiap AI WAJIB memperbarui file ini di akhir sesi. Entri terbaru di paling atas.
 
 ## Status saat ini
-- Ada 2 level yang bisa dimainkan, datanya di `src/scenes/levels/`. Level 1 (Dek Kapal): 960 piksel, 17 koin, 4 kepiting. Level 2 (Pelabuhan Berkabut): 1100 piksel, 18 koin, 5 kepiting. Bendera memindahkan ke level berikutnya; skor dan nyawa terbawa.
-- Sprite pixel asli (Gemini) sudah dipasang: `player`, `peti`, `papan`, `koin`, `kepiting`, `bendera`. Placeholder kode (`src/entities/tekstur.js`) hanya dipakai jika PNG gagal dimuat.
+- Ada 2 level yang bisa dimainkan, datanya di `src/scenes/levels/`. Level 1 (Dek Kapal): 960 piksel, 17 koin, 1 permata, 1 hati, 4 kepiting. Level 2 (Pelabuhan Berkabut): 1100 piksel, 18 koin, 2 permata, 1 hati, 5 kepiting. Bendera memindahkan ke level berikutnya; skor dan nyawa terbawa.
+- Permata Laut (+50) dan Hati Bajak Laut (+1 nyawa, tidak melewati batas maksimum) sudah ada. Sprite-nya masih placeholder kode, angkanya masih nilai cadangan di `GameScene.js`.
+- Sprite pixel asli (Gemini) sudah dipasang: `player`, `peti`, `papan`, `koin`, `kepiting`, `bendera`. Placeholder kode (`src/entities/tekstur.js`) dipakai jika PNG tidak ada.
 - HUD dari Codex (`src/ui/HudScene.js`) aktif. Angka game ada di `src/config/balance.js` (skor musuh 20, kecepatan musuh 35).
 - Latar parallax Gemini menyesuaikan gerakan kamera.
 - Tes: `npm test` (Node 20+). Belum dijalankan.
@@ -13,6 +14,13 @@ Setiap AI WAJIB memperbarui file ini di akhir sesi. Entri terbaru di paling atas
 - Tim AI: Claude, Gemini CLI, Codex, GitHub Copilot, ChatGPT. Pembagian tugas: `TASKS.md`.
 
 ## Log sesi
+### 2026-11-05 — Claude (Permata Laut + Hati Bajak Laut)
+- Branch: `claude/koleksi-baru-2` (dari `main` terbaru; menggantikan `claude/koleksi-baru` yang konflik di `HANDOFF.md`).
+- `GameScene.js`: grup `permata` dan `hati`; data level punya kunci opsional `permata` dan `hati` (daftar `[x, y]`). Hati hanya terambil jika nyawa belum penuh.
+- `tekstur.js`: placeholder `permata` dan `hati` (8x8). `level1.js`: 1 permata, 1 hati. `level2.js`: 2 permata, 1 hati.
+- `permata` dan `hati` sengaja tidak di-`preload` agar tidak ada error 404; tambahkan ke `SPRITE` di `GameScene.js` setelah PNG tersedia.
+- Belum diuji di browser. Posisi permata (di atas papan tinggi) perlu dicek bisa dijangkau.
+
 ### 2026-11-05 — ChatGPT (identitas game, teks menu, blueprint level 3)
 - Menambahkan `docs/desain/identitas-menu-blueprint-level-3.md`: rekomendasi judul game dan alternatifnya, nama enam level (termasuk dua level yang sudah ada), teks menu/cara bermain/pesan UI, serta blueprint rinci Level 3 "Atap Pasar Rempah".
 - Blueprint mencakup ukuran dunia, koordinat platform, posisi/pola musuh, koleksi, urutan tantangan, arahan visual/audio, dan kriteria playtest.
@@ -21,7 +29,7 @@ Setiap AI WAJIB memperbarui file ini di akhir sesi. Entri terbaru di paling atas
 - Status: menyiapkan pull request ke `main`; pengguna yang melakukan merge. Semua nama, teks, dan tata letak merupakan usulan untuk ditinjau.
 
 ### 2026-11-05 — Claude (level data-driven + level 2)
-- Branch: `claude/level-data`. Level kini data di `src/scenes/levels/` (`level1.js`, `level2.js`, `index.js`). Menambah level = tambah berkas + satu baris di `index.js`.
+- Branch: `claude/level-data` (PR #9, sudah digabung). Level kini data di `src/scenes/levels/` (`level1.js`, `level2.js`, `index.js`). Menambah level = tambah berkas + satu baris di `index.js`.
 - `GameScene.js`: baca level dari data; bendera pindah ke level berikutnya dengan skor dan nyawa terbawa; level terakhir menampilkan TAMAT; game over mengulang level yang sedang dimainkan.
 - Level 2 "Pelabuhan Berkabut" (lebar 1100, 5 kepiting, 18 koin). Papan bergerak naik-turun belum ada (menyusul).
 - Catatan Gemini: `Background.update` sekarang dipanggil tanpa argumen delta (memang tidak dipakai).
@@ -68,7 +76,9 @@ Setiap AI WAJIB memperbarui file ini di akhir sesi. Entri terbaru di paling atas
 ## Permintaan antar-AI
 (Tulis di sini jika perlu mengubah area AI lain. Format: `[dari -> ke] permintaan`)
 - `[Claude -> Codex]` Cek `package.json` baru dan jalankan `npm test`. Laporkan hasilnya di sini.
+- `[Claude -> Codex]` Tambahkan ke `src/config/balance.js`: `skorPermata: 50`, `nyawaHati: 1` (juga `kecepatanCamar: 55` untuk musuh berikutnya), plus tes kecilnya. Sementara `GameScene.js` memakai nilai cadangan yang sama (`ANGKA.skorPermata ?? 50`); setelah angkanya ada, cadangan itu bisa dihapus.
 - `[Claude -> Gemini]` Sprite masih statis (tanpa animasi jalan/lompat). Jika mau, buat spritesheet pemain (diam, jalan, lompat) dan daftarkan ukuran frame serta nama animasi di `assets/README.md`. Claude yang memasang animasinya.
+- `[Claude -> Gemini]` Buat sprite `permata.png` (8x8, permata laut biru muda) dan `hati.png` (8x8, hati merah), daftarkan di `assets/README.md`. Setelah ada, Claude menambahkannya ke `preload`.
 
 ## Keputusan penting
 - Engine: Phaser 3 (dipilih pengguna).
