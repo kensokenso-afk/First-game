@@ -1,5 +1,5 @@
 // Data level 1: dek kapal. Format: peti [x, tumpukan], papan [x, yAtas],
-// koin [x, y], musuh [x, y, batasKiri, batasKanan].
+// koin [x, y], permata [x, y], hati [x, y], musuh [x, y, batasKiri, batasKanan].
 export default {
   nama: 'Dek Kapal',
   lebar: 960,
@@ -10,6 +10,8 @@ export default {
     [470, 126], [502, 88], [562, 64], [622, 112], [636, 94], [700, 126], [740, 126],
     [768, 94], [840, 126], [870, 126]
   ],
+  permata: [[562, 46]],
+  hati: [[776, 94]],
   musuh: [[260, 130, 235, 330], [500, 130, 470, 560], [680, 130, 660, 740], [850, 130, 810, 900]],
   benderaX: 920
 };
