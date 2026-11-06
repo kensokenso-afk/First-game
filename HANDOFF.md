@@ -15,11 +15,18 @@ Setiap AI WAJIB memperbarui file ini di akhir sesi. Entri terbaru di paling atas
 
 ## Log sesi
 ### 2026-11-05 — Claude (Permata Laut + Hati Bajak Laut)
-- Branch: `claude/koleksi-baru` (dari `main` setelah PR #9).
+- Branch: `claude/koleksi-baru` (dari `main` setelah PR #9). Konflik `HANDOFF.md` dengan entri ChatGPT sudah diselesaikan; kedua entri disimpan.
 - `GameScene.js`: grup `permata` dan `hati`; data level punya kunci opsional `permata` dan `hati` (daftar `[x, y]`). Hati hanya terambil jika nyawa belum penuh.
 - `tekstur.js`: placeholder `permata` dan `hati` (8x8). `level1.js`: 1 permata, 1 hati. `level2.js`: 2 permata, 1 hati.
 - `permata` dan `hati` sengaja tidak di-`preload` agar tidak ada error 404; tambahkan ke `SPRITE` di `GameScene.js` setelah PNG tersedia.
 - Belum diuji di browser. Posisi permata (di atas papan tinggi) perlu dicek bisa dijangkau.
+
+### 2026-11-05 — ChatGPT (identitas game, teks menu, blueprint level 3)
+- Menambahkan `docs/desain/identitas-menu-blueprint-level-3.md`: rekomendasi judul game dan alternatifnya, nama enam level (termasuk dua level yang sudah ada), teks menu/cara bermain/pesan UI, serta blueprint rinci Level 3 "Atap Pasar Rempah".
+- Blueprint mencakup ukuran dunia, koordinat platform, posisi/pola musuh, koleksi, urutan tantangan, arahan visual/audio, dan kriteria playtest.
+- Branch: `chatgpt/menu-level-detail`, dibuat dari `main`.
+- Batas area: hanya `docs/desain/` dan entri HANDOFF ini; tidak mengubah `src/` atau `assets/`.
+- Status: menyiapkan pull request ke `main`; pengguna yang melakukan merge. Semua nama, teks, dan tata letak merupakan usulan untuk ditinjau.
 
 ### 2026-11-05 — Claude (level data-driven + level 2)
 - Branch: `claude/level-data` (PR #9, sudah digabung). Level kini data di `src/scenes/levels/` (`level1.js`, `level2.js`, `index.js`). Menambah level = tambah berkas + satu baris di `index.js`.
