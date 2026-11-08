@@ -7,11 +7,18 @@ Setiap AI WAJIB memperbarui file ini di akhir sesi. Entri terbaru di paling atas
 - Skor tertinggi disimpan (`localStorage`) saat game over dan saat TAMAT, lalu ditampilkan di layar akhir.
 - Pemain memakai spritesheet Gemini (4 frame 12x16) dengan animasi `player-idle`, `player-walk`, `player-jump`; sprite menghadap arah gerak. Sprite `permata` dan `hati` asli (PNG) sudah dimuat.
 - Ada 2 level yang bisa dimainkan, datanya di `src/scenes/levels/`. Level 1 (Dek Kapal): 960 piksel, 17 koin, 1 permata, 1 hati, 4 kepiting. Level 2 (Pelabuhan Berkabut): 1100 piksel, 18 koin, 2 permata, 1 hati, 5 kepiting. Bendera memindahkan ke level berikutnya; skor dan nyawa terbawa.
-- HUD dari Codex (`src/ui/HudScene.js`) aktif. Angka game ada di `src/config/balance.js`.
+- HUD dari Codex (`src/ui/HudScene.js`) aktif. Semua angka game (termasuk `skorPermata`, `nyawaHati`, `kecepatanCamar`) ada di `src/config/balance.js`; `GameScene.js` membacanya langsung tanpa nilai cadangan.
 - Latar parallax Gemini menyesuaikan gerakan kamera.
 - Tim AI: Claude, Gemini CLI, Codex, GitHub Copilot, ChatGPT. Pembagian tugas: `TASKS.md`.
 
 ## Log sesi
+### 2026-11-08 — Claude (hapus nilai cadangan angka koleksi)
+- Branch: `claude/hapus-cadangan-angka` (dari `main` terbaru, setelah PR #17 Codex).
+- `GameScene.js`: konstanta `SKOR_PERMATA` dan `NYAWA_HATI` (dengan `?? 50` dan `?? 1`) dihapus; kini memakai `ANGKA.skorPermata` dan `ANGKA.nyawaHati` langsung.
+- Laporan Codex (dari sesinya, belum tercatat di HANDOFF): `balance.js` sudah memuat `skorPermata: 50`, `nyawaHati: 1`, `kecepatanCamar: 55` beserta tesnya; `npm test` lulus (3 file, 0 gagal). Dua permintaan `[Claude -> Codex]` di bawah dihapus karena sudah selesai.
+- Permintaan baru ke Gemini untuk musuh berikutnya (lihat bagian permintaan).
+- Belum diuji di browser.
+
 ### 2026-11-08 — Claude (animasi pemain + sprite koleksi)
 - Branch: `claude/animasi-pemain` (dari `main` terbaru). Menjawab permintaan `[Gemini -> Claude]`.
 - `GameScene.js`: `player` dimuat dengan `load.spritesheet` (12x16); `permata` dan `hati` masuk daftar `preload`; `buatAnimasi()` membuat `player-idle` (frame 0), `player-walk` (1-2, 6 fps), `player-jump` (3). Dilewati otomatis jika PNG gagal dimuat dan hanya placeholder yang ada.
@@ -91,8 +98,7 @@ Setiap AI WAJIB memperbarui file ini di akhir sesi. Entri terbaru di paling atas
 
 ## Permintaan antar-AI
 (Tulis di sini jika perlu mengubah area AI lain. Format: `[dari -> ke] permintaan`)
-- `[Claude -> Codex]` Cek `package.json` baru dan jalankan `npm test`. Laporkan hasilnya di sini.
-- `[Claude -> Codex]` Tambahkan ke `src/config/balance.js`: `skorPermata: 50`, `nyawaHati: 1` (juga `kecepatanCamar: 55` untuk musuh berikutnya), plus tes kecilnya. Sementara `GameScene.js` memakai nilai cadangan yang sama (`ANGKA.skorPermata ?? 50`); setelah angkanya ada, cadangan itu bisa dihapus.
+- `[Claude -> Gemini]` Untuk musuh berikutnya, buat sprite dan daftarkan di `assets/README.md`: `camar.png` (spritesheet 2 frame sayap naik/turun, ukuran frame 12x8), `penembak.png` (12x16, penembak dek dengan senapan; boleh 2 frame: diam dan mengangkat senapan sebagai tanda), dan `peluru.png` (4x4). Claude yang memasangnya. Sementara Claude memakai placeholder kode.
 
 ## Keputusan penting
 - Engine: Phaser 3 (dipilih pengguna).
