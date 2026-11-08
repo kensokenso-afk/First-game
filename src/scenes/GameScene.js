@@ -11,10 +11,6 @@ import { DAFTAR_LEVEL } from './levels/index.js';
 // 'player' dimuat terpisah sebagai spritesheet (lihat preload).
 const SPRITE = ['peti', 'papan', 'koin', 'kepiting', 'bendera', 'permata', 'hati'];
 
-// Angka koleksi baru. Menunggu Codex menambah ke balance.js; nilai cadangan dari docs/desain.
-const SKOR_PERMATA = ANGKA.skorPermata ?? 50;
-const NYAWA_HATI = ANGKA.nyawaHati ?? 1;
-
 // Area: Claude (logika game). Latar belakang ada di src/background/ (area Gemini).
 // Tujuan tiap level: ambil koin, injak kepiting, capai bendera.
 export default class GameScene extends Phaser.Scene {
@@ -150,7 +146,7 @@ export default class GameScene extends Phaser.Scene {
 
   ambilPermata(permata) {
     permata.destroy();
-    this.tambahSkor(SKOR_PERMATA);
+    this.tambahSkor(ANGKA.skorPermata);
   }
 
   // Hati hanya diambil jika nyawa belum penuh; kalau penuh, tetap di tempat
@@ -158,7 +154,7 @@ export default class GameScene extends Phaser.Scene {
     const nyawa = this.registry.get('nyawa');
     if (nyawa >= ANGKA.nyawaMaksimum) return;
     hati.destroy();
-    this.registry.set('nyawa', hitungNyawa(nyawa, NYAWA_HATI));
+    this.registry.set('nyawa', hitungNyawa(nyawa, ANGKA.nyawaHati));
   }
 
   temuMusuh(pemain, musuh) {
