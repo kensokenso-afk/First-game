@@ -7,7 +7,10 @@ export const ANGKA = Object.freeze({
   nyawaMaksimum: 5,
   skorKoin: 10,
   skorMusuh: 20,
+  skorPermata: 50,
+  nyawaHati: 1,
   kecepatanMusuh: 35,
+  kecepatanCamar: 55,
   pantulanInjak: 180,
   lamaKebalMs: 1000
 });

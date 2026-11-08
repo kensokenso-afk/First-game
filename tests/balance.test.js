@@ -5,6 +5,12 @@ import { ANGKA, hitungNyawa, hitungSkor } from '../src/config/balance.js';
 test('skor bertambah sesuai poin yang diperoleh', () => {
   assert.equal(hitungSkor(20, ANGKA.skorKoin), 30);
   assert.equal(hitungSkor(30, ANGKA.skorMusuh), 50);
+  assert.equal(hitungSkor(0, ANGKA.skorPermata), 50);
+});
+
+test('angka koleksi dan musuh berikutnya tersedia', () => {
+  assert.equal(ANGKA.nyawaHati, 1);
+  assert.equal(ANGKA.kecepatanCamar, 55);
 });
 
 test('skor tidak turun di bawah nol', () => {
