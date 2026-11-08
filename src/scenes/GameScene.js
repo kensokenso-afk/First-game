@@ -8,9 +8,8 @@ import { simpanSkorTertinggi } from '../systems/highScore.js';
 import { DAFTAR_LEVEL } from './levels/index.js';
 
 // Sprite pixel dari Gemini (assets/). Kunci sama dengan placeholder di tekstur.js.
-// 'permata' dan 'hati' belum ada PNG-nya: sementara memakai placeholder kode.
-// Setelah Gemini menambahkan PNG, tambahkan kuncinya ke daftar ini.
-const SPRITE = ['player', 'peti', 'papan', 'koin', 'kepiting', 'bendera'];
+// 'player' dimuat terpisah sebagai spritesheet (lihat preload).
+const SPRITE = ['peti', 'papan', 'koin', 'kepiting', 'bendera', 'permata', 'hati'];
 
 // Angka koleksi baru. Menunggu Codex menambah ke balance.js; nilai cadangan dari docs/desain.
 const SKOR_PERMATA = ANGKA.skorPermata ?? 50;
@@ -34,7 +33,23 @@ export default class GameScene extends Phaser.Scene {
   }
 
   preload() {
+    // Spritesheet pemain: 4 frame 12x16 (0 diam, 1-2 jalan, 3 lompat)
+    this.load.spritesheet('player', 'assets/player.png', { frameWidth: 12, frameHeight: 16 });
     SPRITE.forEach((kunci) => this.load.image(kunci, `assets/${kunci}.png`));
+  }
+
+  // Animasi pemain dibuat sekali (animasi bersifat global antar-scene).
+  // Dilewati jika spritesheet gagal dimuat dan yang ada hanya placeholder 1 frame.
+  buatAnimasi() {
+    if (this.anims.exists('player-idle') || !this.textures.get('player').has(3)) return;
+    this.anims.create({ key: 'player-idle', frames: [{ key: 'player', frame: 0 }], frameRate: 1 });
+    this.anims.create({
+      key: 'player-walk',
+      frames: this.anims.generateFrameNumbers('player', { start: 1, end: 2 }),
+      frameRate: 6,
+      repeat: -1
+    });
+    this.anims.create({ key: 'player-jump', frames: [{ key: 'player', frame: 3 }], frameRate: 1 });
   }
 
   create() {
@@ -44,6 +59,7 @@ export default class GameScene extends Phaser.Scene {
     const dekAtas = h - 40; // sama dengan dek di Background.js
 
     buatTekstur(this);
+    this.buatAnimasi();
     this.berhenti = false;
 
     this.bg = new Background(this);

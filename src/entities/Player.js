@@ -1,6 +1,7 @@
 import { ANGKA } from '../config/balance.js';
 
 // Area: Claude. Pemain: gerak, lompat satu kali per tekanan, terpental saat kena musuh.
+// Animasi (dibuat di GameScene): player-idle, player-walk, player-jump.
 export default class Player extends Phaser.Physics.Arcade.Sprite {
   constructor(scene, x, y) {
     super(scene, x, y, 'player');
@@ -30,7 +31,8 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     }
 
     // Saat terpental, kontrol gerak mendatar ditahan sebentar
-    if (waktu >= this.terpentalSampai) {
+    const bisaGerak = waktu >= this.terpentalSampai;
+    if (bisaGerak) {
       if (kiri) this.setVelocityX(-ANGKA.kecepatanPemain);
       else if (kanan) this.setVelocityX(ANGKA.kecepatanPemain);
       else this.setVelocityX(0);
@@ -41,6 +43,17 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     this.lompatSebelumnya = lompatDitahan;
     const dipijak = this.body.blocked.down || this.body.touching.down;
     if (lompatBaru && dipijak) this.setVelocityY(-ANGKA.kekuatanLompat);
+
+    // Menghadap arah gerak
+    if (bisaGerak && kiri !== kanan) this.setFlipX(kiri);
+
+    // Animasi: lompat di udara, jalan saat bergerak, diam selebihnya.
+    // Dilewati jika animasi belum dibuat (mis. PNG spritesheet tidak ada).
+    if (this.scene.anims.exists('player-idle')) {
+      if (!dipijak) this.anims.play('player-jump', true);
+      else if (this.body.velocity.x !== 0) this.anims.play('player-walk', true);
+      else this.anims.play('player-idle', true);
+    }
 
     // Berkedip saat kebal
     const berkedip = waktu < this.kebalSampai && Math.floor(waktu / 80) % 2 === 1;
