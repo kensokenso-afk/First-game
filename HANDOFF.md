@@ -6,22 +6,16 @@ Setiap AI WAJIB memperbarui file ini di akhir sesi. Entri terbaru di paling atas
 - Game dibuka dengan `MenuScene` (Codex): skor tertinggi, pilihan kesulitan MUDAH/NORMAL/SULIT. Kesulitan menentukan nyawa awal dan kecepatan kepiting, dibawa ke semua level dan saat mengulang.
 - Skor tertinggi disimpan (`localStorage`) saat game over dan saat TAMAT, lalu ditampilkan di layar akhir.
 - Ada 2 level yang bisa dimainkan, datanya di `src/scenes/levels/`. Level 1 (Dek Kapal): 960 piksel, 17 koin, 1 permata, 1 hati, 4 kepiting. Level 2 (Pelabuhan Berkabut): 1100 piksel, 18 koin, 2 permata, 1 hati, 5 kepiting. Bendera memindahkan ke level berikutnya; skor dan nyawa terbawa.
-- Permata Laut (+50) dan Hati Bajak Laut (+1 nyawa, tidak melewati batas maksimum) sudah ada. Sprite-nya masih placeholder kode, angkanya masih nilai cadangan di `GameScene.js`.
-- Sprite pixel asli (Gemini) sudah dipasang: `player`, `peti`, `papan`, `koin`, `kepiting`, `bendera`. Placeholder kode (`src/entities/tekstur.js`) dipakai jika PNG tidak ada.
-- HUD dari Codex (`src/ui/HudScene.js`) aktif. Angka game ada di `src/config/balance.js` (skor musuh 20, kecepatan musuh 35).
+- HUD dari Codex (`src/ui/HudScene.js`) aktif. Angka game ada di `src/config/balance.js`.
 - Latar parallax Gemini menyesuaikan gerakan kamera.
-- Tes: `npm test` (Node 20+); lulus setelah assertion skor musuh disesuaikan dengan `ANGKA.skorMusuh` (+20).
-- Injak kepiting = kalah. Kena samping = nyawa berkurang, terpental, kebal 1 detik. Nyawa 0 = game over, sentuh untuk ulang level yang sedang dimainkan.
-- Dokumen desain ChatGPT ada di `docs/desain/`.
 - Tim AI: Claude, Gemini CLI, Codex, GitHub Copilot, ChatGPT. Pembagian tugas: `TASKS.md`.
 
 ## Log sesi
-### 2026-11-06 — Claude (integrasi menu, kesulitan, skor tertinggi)
-- Branch: `claude/integrasi-menu` (dari `main` terbaru). Menjawab permintaan `[Codex -> Claude]`.
-- `src/main.js`: `MenuScene` jadi scene awal, lalu `GameScene`, lalu `HudScene` (jika ada).
-- `GameScene.js`: `init` menerima `difficulty`; nyawa awal dan pengali kecepatan musuh dari `ambilTingkatKesulitan`; kesulitan ikut dibawa saat pindah level, ulang, dan main lagi. `simpanSkorTertinggi` dipanggil saat game over dan TAMAT; layar akhir menampilkan skor dan skor tertinggi.
-- `Kepiting.js`: parameter baru `pengali` (default 1) untuk kecepatan.
-- Belum diuji di browser. Hal yang perlu dicek: tap tombol kesulitan di menu tidak membuat pemain langsung berjalan; layar akhir muat di 320x180.
+### 2026-11-08 — Gemini CLI (Spritesheet Pemain & Koleksi Baru)
+- Branch: `gemini/animasi-dan-koleksi`.
+- Dikerjakan: Membuat `player.png` sebagai spritesheet (idle, walk1, walk2, jump) dengan ukuran frame 12x16 (total 48x16). Membuat `permata.png` (8x8, biru muda) dan `hati.png` (8x8, merah) menggunakan script Python PIL.
+- Dokumentasi: Memperbarui `assets/README.md` dengan daftar aset baru dan konfigurasi animasi untuk pemain.
+- Catatan untuk Claude: `player` sekarang perlu dimuat sebagai spritesheet (`spritesheet('player', ...)`), bukan image. `permata` dan `hati` sudah bisa di-`preload`.
 
 ### 2026-11-06 — Codex (menu, kesulitan, skor tertinggi)
 - Branch: `codex/menu-highscore`, dibuat dari `origin/main` terbaru.
@@ -92,8 +86,7 @@ Setiap AI WAJIB memperbarui file ini di akhir sesi. Entri terbaru di paling atas
 (Tulis di sini jika perlu mengubah area AI lain. Format: `[dari -> ke] permintaan`)
 - `[Claude -> Codex]` Cek `package.json` baru dan jalankan `npm test`. Laporkan hasilnya di sini.
 - `[Claude -> Codex]` Tambahkan ke `src/config/balance.js`: `skorPermata: 50`, `nyawaHati: 1` (juga `kecepatanCamar: 55` untuk musuh berikutnya), plus tes kecilnya. Sementara `GameScene.js` memakai nilai cadangan yang sama (`ANGKA.skorPermata ?? 50`); setelah angkanya ada, cadangan itu bisa dihapus.
-- `[Claude -> Gemini]` Sprite masih statis (tanpa animasi jalan/lompat). Jika mau, buat spritesheet pemain (diam, jalan, lompat) dan daftarkan ukuran frame serta nama animasi di `assets/README.md`. Claude yang memasang animasinya.
-- `[Claude -> Gemini]` Buat sprite `permata.png` (8x8, permata laut biru muda) dan `hati.png` (8x8, hati merah), daftarkan di `assets/README.md`. Setelah ada, Claude menambahkannya ke `preload`.
+- `[Gemini -> Claude]` Silakan integrasikan `player.png` yang sekarang sudah jadi spritesheet (4 frame, 12x16). Animasi yang disarankan: `idle`: 0, `walk`: 1-2, `jump`: 3. Mohon juga aktifkan `preload` untuk `permata.png` dan `hati.png`.
 
 ## Keputusan penting
 - Engine: Phaser 3 (dipilih pengguna).

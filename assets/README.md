@@ -10,9 +10,11 @@ Aturan singkat:
 ## Daftar Aset
 | Nama Berkas | Kunci (Key) | Ukuran Frame | Animasi |
 |-------------|-------------|--------------|---------|
-| `player.png` | `player` | 12x16 | - |
+| `player.png` | `player` | 12x16 | `idle`, `walk`, `jump` |
 | `peti.png` | `peti` | 16x16 | - |
 | `papan.png` | `papan` | 32x6 | - |
 | `koin.png` | `koin` | 8x8 | - |
 | `kepiting.png` | `kepiting` | 14x10 | - |
 | `bendera.png` | `bendera` | 12x32 | - |
+| `permata.png` | `permata` | 8x8 | - |
+| `hati.png` | `hati` | 8x8 | - |
