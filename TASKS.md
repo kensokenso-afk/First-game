@@ -29,7 +29,7 @@ Copilot hanya melapor bug di `HANDOFF.md`; perbaikan kode dikerjakan pemilik are
 
 ## Fase 2 — Musuh dan hadiah
 - [x] Claude: musuh kepiting jalan bolak-balik, injak untuk kalahkan, koin, kena musuh = nyawa berkurang (di `claude/level-1`). Musuh jenis lain menyusul sesuai ide ChatGPT.
-- [x] Gemini CLI: sprite musuh, koin, efek kecil (debu, kilau).
+- [x] Gemini CLI: sprite musuh, koin, efek kecil (debu, kilau). Aset `permata.png` dan `hati.png` juga sudah siap.
 - [ ] Codex: `src/systems/` untuk skor dan nyawa, kondisi game over saat nyawa habis, tes.
 - [ ] Copilot: audit bug Fase 2, laporkan di `HANDOFF.md`.
 - [ ] ChatGPT: tabel angka awal (kecepatan musuh, skor per koin, jumlah nyawa).
