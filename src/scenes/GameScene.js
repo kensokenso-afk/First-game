@@ -3,6 +3,8 @@ import Player from '../entities/Player.js';
 import Kepiting from '../entities/Kepiting.js';
 import { buatTekstur } from '../entities/tekstur.js';
 import { ANGKA, hitungSkor, hitungNyawa } from '../config/balance.js';
+import { ambilTingkatKesulitan } from '../config/difficulty.js';
+import { simpanSkorTertinggi } from '../systems/highScore.js';
 import { DAFTAR_LEVEL } from './levels/index.js';
 
 // Sprite pixel dari Gemini (assets/). Kunci sama dengan placeholder di tekstur.js.
@@ -21,11 +23,14 @@ export default class GameScene extends Phaser.Scene {
     super('GameScene');
   }
 
-  // data: { level, skor, nyawa } dari level sebelumnya; kosong = mulai baru
+  // data: { level, skor, nyawa, difficulty }; level/skor/nyawa dari level sebelumnya,
+  // difficulty dari MenuScene dan dibawa terus. Kosong = mulai baru, kesulitan normal.
   init(data) {
     this.indeksLevel = data?.level ?? 0;
     this.skorAwal = data?.skor ?? 0;
-    this.nyawaAwal = data?.nyawa ?? ANGKA.nyawaAwal;
+    this.kunciKesulitan = data?.difficulty ?? 'normal';
+    this.kesulitan = ambilTingkatKesulitan(this.kunciKesulitan);
+    this.nyawaAwal = data?.nyawa ?? this.kesulitan.nyawaAwal;
   }
 
   preload() {
@@ -111,7 +116,9 @@ export default class GameScene extends Phaser.Scene {
     this.tweens.add({ targets: berkilau, scaleX: 0.3, duration: 450, yoyo: true, repeat: -1 });
 
     this.musuh = this.physics.add.group();
-    d.musuh.forEach(([x, y, kiri, kanan]) => this.musuh.add(new Kepiting(this, x, y, kiri, kanan)));
+    d.musuh.forEach(([x, y, kiri, kanan]) => {
+      this.musuh.add(new Kepiting(this, x, y, kiri, kanan, this.kesulitan.pengaliMusuh));
+    });
 
     this.bendera = this.physics.add.staticImage(d.benderaX, dekAtas - 16, 'bendera');
   }
@@ -153,14 +160,20 @@ export default class GameScene extends Phaser.Scene {
     }
   }
 
+  // Simpan skor akhir; mengembalikan skor tertinggi terbaru
+  simpanSkor() {
+    return simpanSkorTertinggi(this.registry.get('skor'));
+  }
+
   selesaiLevel() {
     if (this.berhenti) return;
     const skor = this.registry.get('skor');
     const adaBerikutnya = this.indeksLevel + 1 < DAFTAR_LEVEL.length;
     if (!adaBerikutnya) {
-      this.akhiri(`TAMAT!\nSkor: ${skor}\nSentuh untuk main lagi`);
+      const tertinggi = this.simpanSkor();
+      this.akhiri(`TAMAT!\nSkor: ${skor}\nTertinggi: ${tertinggi}\nSentuh untuk main lagi`);
       this.time.delayedCall(700, () => {
-        const ulang = () => this.scene.restart({ level: 0 });
+        const ulang = () => this.scene.restart({ level: 0, difficulty: this.kunciKesulitan });
         this.input.once('pointerdown', ulang);
         this.input.keyboard.once('keydown-SPACE', ulang);
       });
@@ -171,15 +184,18 @@ export default class GameScene extends Phaser.Scene {
     this.time.delayedCall(1800, () => this.scene.restart({
       level: this.indeksLevel + 1,
       skor,
-      nyawa: this.registry.get('nyawa')
+      nyawa: this.registry.get('nyawa'),
+      difficulty: this.kunciKesulitan
     }));
   }
 
   gameOver() {
-    this.akhiri('GAME OVER\nSentuh untuk ulang');
+    const skor = this.registry.get('skor');
+    const tertinggi = this.simpanSkor();
+    this.akhiri(`GAME OVER\nSkor: ${skor}\nTertinggi: ${tertinggi}\nSentuh untuk ulang`);
     this.time.delayedCall(700, () => {
       // Ulang dari level yang sedang dimainkan, skor dan nyawa direset
-      const ulang = () => this.scene.restart({ level: this.indeksLevel });
+      const ulang = () => this.scene.restart({ level: this.indeksLevel, difficulty: this.kunciKesulitan });
       this.input.once('pointerdown', ulang);
       this.input.keyboard.once('keydown-SPACE', ulang);
     });
