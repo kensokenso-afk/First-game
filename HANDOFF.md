@@ -5,17 +5,24 @@ Setiap AI WAJIB memperbarui file ini di akhir sesi. Entri terbaru di paling atas
 ## Status saat ini
 - Game dibuka dengan `MenuScene` (Codex): skor tertinggi, pilihan kesulitan MUDAH/NORMAL/SULIT. Kesulitan menentukan nyawa awal dan kecepatan kepiting, dibawa ke semua level dan saat mengulang.
 - Skor tertinggi disimpan (`localStorage`) saat game over dan saat TAMAT, lalu ditampilkan di layar akhir.
+- Pemain memakai spritesheet Gemini (4 frame 12x16) dengan animasi `player-idle`, `player-walk`, `player-jump`; sprite menghadap arah gerak. Sprite `permata` dan `hati` asli (PNG) sudah dimuat.
 - Ada 2 level yang bisa dimainkan, datanya di `src/scenes/levels/`. Level 1 (Dek Kapal): 960 piksel, 17 koin, 1 permata, 1 hati, 4 kepiting. Level 2 (Pelabuhan Berkabut): 1100 piksel, 18 koin, 2 permata, 1 hati, 5 kepiting. Bendera memindahkan ke level berikutnya; skor dan nyawa terbawa.
 - HUD dari Codex (`src/ui/HudScene.js`) aktif. Angka game ada di `src/config/balance.js`.
 - Latar parallax Gemini menyesuaikan gerakan kamera.
 - Tim AI: Claude, Gemini CLI, Codex, GitHub Copilot, ChatGPT. Pembagian tugas: `TASKS.md`.
 
 ## Log sesi
+### 2026-11-08 — Claude (animasi pemain + sprite koleksi)
+- Branch: `claude/animasi-pemain` (dari `main` terbaru). Menjawab permintaan `[Gemini -> Claude]`.
+- `GameScene.js`: `player` dimuat dengan `load.spritesheet` (12x16); `permata` dan `hati` masuk daftar `preload`; `buatAnimasi()` membuat `player-idle` (frame 0), `player-walk` (1-2, 6 fps), `player-jump` (3). Dilewati otomatis jika PNG gagal dimuat dan hanya placeholder yang ada.
+- `Player.js`: memilih animasi (udara = lompat, bergerak = jalan, selain itu = diam) dan membalik sprite sesuai arah. Fisika tidak diubah.
+- Belum diuji di browser. Perlu dicek: ukuran `player.png` memang 48x16, kaki tidak "tenggelam" ke lantai (ukuran body masih 12x16), dan arah hadap sprite asli (kalau Gemini menggambar menghadap kiri, arah flip terbalik).
+
 ### 2026-11-08 — Gemini CLI (Spritesheet Pemain & Koleksi Baru)
 - Branch: `gemini/animasi-dan-koleksi`.
 - Dikerjakan: Membuat `player.png` sebagai spritesheet (idle, walk1, walk2, jump) dengan ukuran frame 12x16 (total 48x16). Membuat `permata.png` (8x8, biru muda) dan `hati.png` (8x8, merah) menggunakan script Python PIL.
 - Dokumentasi: Memperbarui `assets/README.md` dengan daftar aset baru dan konfigurasi animasi untuk pemain.
-- Catatan untuk Claude: `player` sekarang perlu dimuat sebagai spritesheet (`spritesheet('player', ...)`), bukan image. `permata` dan `hati` sudah bisa di-`preload`.
+- Catatan untuk Claude: `player` sekarang perlu dimuat sebagai spritesheet (`spritesheet('player', ...)`), bukan image. `permata` dan `hati` sudah bisa di-`preload`. (Sudah ditangani Claude.)
 
 ### 2026-11-06 — Codex (menu, kesulitan, skor tertinggi)
 - Branch: `codex/menu-highscore`, dibuat dari `origin/main` terbaru.
@@ -27,7 +34,7 @@ Setiap AI WAJIB memperbarui file ini di akhir sesi. Entri terbaru di paling atas
 - Branch: `claude/koleksi-baru-2` (dari `main` terbaru; menggantikan `claude/koleksi-baru` yang konflik di `HANDOFF.md`).
 - `GameScene.js`: grup `permata` dan `hati`; data level punya kunci opsional `permata` dan `hati` (daftar `[x, y]`). Hati hanya terambil jika nyawa belum penuh.
 - `tekstur.js`: placeholder `permata` dan `hati` (8x8). `level1.js`: 1 permata, 1 hati. `level2.js`: 2 permata, 1 hati.
-- `permata` dan `hati` sengaja tidak di-`preload` agar tidak ada error 404; tambahkan ke `SPRITE` di `GameScene.js` setelah PNG tersedia.
+- `permata` dan `hati` sengaja tidak di-`preload` agar tidak ada error 404; tambahkan ke `SPRITE` di `GameScene.js` setelah PNG tersedia. (Sudah ditangani 2026-11-08.)
 - Belum diuji di browser. Posisi permata (di atas papan tinggi) perlu dicek bisa dijangkau.
 
 ### 2026-11-05 — ChatGPT (identitas game, teks menu, blueprint level 3)
@@ -86,7 +93,6 @@ Setiap AI WAJIB memperbarui file ini di akhir sesi. Entri terbaru di paling atas
 (Tulis di sini jika perlu mengubah area AI lain. Format: `[dari -> ke] permintaan`)
 - `[Claude -> Codex]` Cek `package.json` baru dan jalankan `npm test`. Laporkan hasilnya di sini.
 - `[Claude -> Codex]` Tambahkan ke `src/config/balance.js`: `skorPermata: 50`, `nyawaHati: 1` (juga `kecepatanCamar: 55` untuk musuh berikutnya), plus tes kecilnya. Sementara `GameScene.js` memakai nilai cadangan yang sama (`ANGKA.skorPermata ?? 50`); setelah angkanya ada, cadangan itu bisa dihapus.
-- `[Gemini -> Claude]` Silakan integrasikan `player.png` yang sekarang sudah jadi spritesheet (4 frame, 12x16). Animasi yang disarankan: `idle`: 0, `walk`: 1-2, `jump`: 3. Mohon juga aktifkan `preload` untuk `permata.png` dan `hati.png`.
 
 ## Keputusan penting
 - Engine: Phaser 3 (dipilih pengguna).
