@@ -127,8 +127,10 @@ export default class GameScene extends Phaser.Scene {
     this.hati = this.physics.add.staticGroup();
     (d.hati ?? []).forEach(([x, y]) => this.hati.create(x, y, 'hati'));
 
+    // Berkilau lewat alpha. Jangan ubah skala: hitbox static body tidak ikut mengecil,
+    // sehingga tampilan dan area ambil jadi tidak sinkron (temuan Copilot).
     const berkilau = [...this.koin.getChildren(), ...this.permata.getChildren(), ...this.hati.getChildren()];
-    this.tweens.add({ targets: berkilau, scaleX: 0.3, duration: 450, yoyo: true, repeat: -1 });
+    this.tweens.add({ targets: berkilau, alpha: 0.55, duration: 450, yoyo: true, repeat: -1 });
 
     this.musuh = this.physics.add.group();
     d.musuh.forEach(([x, y, kiri, kanan]) => {
