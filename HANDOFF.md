@@ -3,19 +3,27 @@
 Setiap AI WAJIB memperbarui file ini di akhir sesi. Entri terbaru di paling atas.
 
 ## Status saat ini
-- Game dibuka dengan `MenuScene` (Codex): skor tertinggi, pilihan kesulitan MUDAH/NORMAL/SULIT. Kesulitan menentukan nyawa awal dan kecepatan kepiting, dibawa ke semua level dan saat mengulang.
+- Game dibuka dengan `MenuScene` (Codex): skor tertinggi, pilihan kesulitan MUDAH/NORMAL/SULIT. Kesulitan menentukan nyawa awal dan kecepatan musuh, dibawa ke semua level dan saat mengulang.
 - Skor tertinggi disimpan (`localStorage`) saat game over dan saat TAMAT, lalu ditampilkan di layar akhir.
 - Pemain memakai spritesheet Gemini (4 frame 12x16) dengan animasi `player-idle`, `player-walk`, `player-jump`; sprite menghadap arah gerak. Sprite `permata` dan `hati` asli (PNG) sudah dimuat.
-- Ada 2 level yang bisa dimainkan, datanya di `src/scenes/levels/`. Level 1 (Dek Kapal): 960 piksel, 17 koin, 1 permata, 1 hati, 4 kepiting. Level 2 (Pelabuhan Berkabut): 1100 piksel, 18 koin, 2 permata, 1 hati, 5 kepiting. Bendera memindahkan ke level berikutnya; skor dan nyawa terbawa.
-- HUD dari Codex (`src/ui/HudScene.js`) aktif. Semua angka game (termasuk `skorPermata`, `nyawaHati`, `kecepatanCamar`) ada di `src/config/balance.js`; `GameScene.js` membacanya langsung tanpa nilai cadangan.
+- Ada 2 level yang bisa dimainkan, datanya di `src/scenes/levels/`. Level 1 (Dek Kapal): 960 piksel, 17 koin, 1 permata, 1 hati, 4 kepiting. Level 2 (Pelabuhan Berkabut): 1100 piksel, 18 koin, 2 permata, 1 hati, 5 kepiting, 1 camar. Bendera memindahkan ke level berikutnya; skor dan nyawa terbawa.
+- Musuh: Kepiting (patroli) dan Burung Camar Pencuri (terbang, berkedip merah sebagai tanda, menukik ke pemain, lalu naik). Camar masih memakai placeholder kode (belum ada PNG).
+- HUD dari Codex (`src/ui/HudScene.js`) aktif. Semua angka game (termasuk `skorPermata`, `nyawaHati`, `kecepatanCamar`) ada di `src/config/balance.js`.
 - Latar parallax Gemini menyesuaikan gerakan kamera.
 - Tim AI: Claude, Gemini CLI, Codex, GitHub Copilot, ChatGPT. Pembagian tugas: `TASKS.md`.
 
 ## Log sesi
+### 2026-11-09 — Claude (musuh Burung Camar Pencuri)
+- Branch: `claude/musuh-camar` (dari `main` terbaru).
+- `src/entities/Camar.js` baru: keadaan patroli -> tanda (diam, berkedip merah 450 ms) -> tukik (ke posisi pemain, 110 px/s) -> naik -> patroli (jeda 1,5 detik). Kecepatan patroli dari `ANGKA.kecepatanCamar` (55) dikali pengali kesulitan. Terbang tanpa gravitasi dan tidak menabrak pijakan. Satu injakan dari atas mengalahkannya (+skor musuh); sentuhan lain melukai pemain.
+- `GameScene.js`: grup `camar` dari data level (kunci opsional `camar`, daftar `[x, y, batasKiri, batasKanan]`); memakai `temuMusuh` yang sama dengan kepiting.
+- `tekstur.js`: placeholder `camar` (12x8). `level2.js`: 1 camar di `[640, 40, 560, 760]`.
+- Belum diuji di browser. Perlu dicek: tanda berkedip cukup terlihat, tukikan bisa dihindari, camar tidak menutupi koin/permata di jalur lompat, dan injakan dari atas mudah dilakukan.
+
 ### 2026-11-08 — Claude (hapus nilai cadangan angka koleksi)
 - Branch: `claude/hapus-cadangan-angka` (dari `main` terbaru, setelah PR #17 Codex).
 - `GameScene.js`: konstanta `SKOR_PERMATA` dan `NYAWA_HATI` (dengan `?? 50` dan `?? 1`) dihapus; kini memakai `ANGKA.skorPermata` dan `ANGKA.nyawaHati` langsung.
-- Laporan Codex (dari sesinya, belum tercatat di HANDOFF): `balance.js` sudah memuat `skorPermata: 50`, `nyawaHati: 1`, `kecepatanCamar: 55` beserta tesnya; `npm test` lulus (3 file, 0 gagal). Dua permintaan `[Claude -> Codex]` di bawah dihapus karena sudah selesai.
+- Laporan Codex (dari sesinya, belum tercatat di HANDOFF): `balance.js` sudah memuat `skorPermata: 50`, `nyawaHati: 1`, `kecepatanCamar: 55` beserta tesnya; `npm test` lulus (3 file, 0 gagal). Dua permintaan `[Claude -> Codex]` dihapus karena sudah selesai.
 - Permintaan baru ke Gemini untuk musuh berikutnya (lihat bagian permintaan).
 - Belum diuji di browser.
 
@@ -98,7 +106,7 @@ Setiap AI WAJIB memperbarui file ini di akhir sesi. Entri terbaru di paling atas
 
 ## Permintaan antar-AI
 (Tulis di sini jika perlu mengubah area AI lain. Format: `[dari -> ke] permintaan`)
-- `[Claude -> Gemini]` Untuk musuh berikutnya, buat sprite dan daftarkan di `assets/README.md`: `camar.png` (spritesheet 2 frame sayap naik/turun, ukuran frame 12x8), `penembak.png` (12x16, penembak dek dengan senapan; boleh 2 frame: diam dan mengangkat senapan sebagai tanda), dan `peluru.png` (4x4). Claude yang memasangnya. Sementara Claude memakai placeholder kode.
+- `[Claude -> Gemini]` Untuk musuh berikutnya, buat sprite dan daftarkan di `assets/README.md`: `camar.png` (spritesheet 2 frame sayap naik/turun, ukuran frame 12x8), `penembak.png` (12x16, penembak dek dengan senapan; boleh 2 frame: diam dan mengangkat senapan sebagai tanda), dan `peluru.png` (4x4). Claude yang memasangnya. Sementara Claude memakai placeholder kode (camar sudah memakai placeholder 12x8 single-frame).
 
 ## Keputusan penting
 - Engine: Phaser 3 (dipilih pengguna).

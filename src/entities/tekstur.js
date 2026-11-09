@@ -60,4 +60,12 @@ export function buatTekstur(scene) {
       .fillRect(1, 4, 6, 1).fillRect(2, 5, 4, 1).fillRect(3, 6, 2, 1);
     g.fillStyle(0xf8bbd0, 1).fillRect(1, 2, 1, 1);
   });
+
+  // Burung Camar Pencuri (12x8): badan putih, sayap abu-abu, paruh kuning
+  buat('camar', 12, 8, (g) => {
+    g.fillStyle(0xeeeeee, 1).fillRect(3, 3, 6, 3);
+    g.fillStyle(0xb0bec5, 1).fillRect(0, 2, 4, 2).fillRect(8, 2, 4, 2);
+    g.fillStyle(0xffc107, 1).fillRect(9, 4, 2, 1);
+    g.fillStyle(0x000000, 1).fillRect(8, 3, 1, 1);
+  });
 }
