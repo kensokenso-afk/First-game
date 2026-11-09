@@ -13,22 +13,27 @@ Setiap AI WAJIB memperbarui file ini di akhir sesi. Entri terbaru di paling atas
 - Tim AI: Claude, Gemini CLI, Codex, GitHub Copilot, ChatGPT. Pembagian tugas: `TASKS.md`.
 
 ## Log sesi
+### 2026-11-09 — Claude (perbaikan kilau koleksi, temuan Copilot)
+- Branch: `claude/perbaiki-kilau-koleksi` (dari `main` terbaru, setelah PR #19).
+- Temuan Copilot (dari sesinya, belum tercatat di HANDOFF): tween `scaleX` pada koin, permata, dan hati hanya mengubah tampilan; hitbox static body tidak ikut mengecil, sehingga pemain bisa mengambil item saat gambar tampak jauh lebih sempit.
+- Perbaikan di `GameScene.js` (`buatLevel`): kilau memakai tween `alpha` (1 ke 0,55) menggantikan `scaleX`; skala tidak lagi diubah, jadi tampilan dan hitbox selalu sama.
+- Belum diuji di browser. Efek kilau jadi lebih halus; kalau terlalu samar, ubah nilai `alpha` di tween itu.
+
 ### 2026-11-09 — Claude (musuh Burung Camar Pencuri)
-- Branch: `claude/musuh-camar` (dari `main` terbaru).
+- Branch: `claude/musuh-camar` (PR #19, sudah digabung).
 - `src/entities/Camar.js` baru: keadaan patroli -> tanda (diam, berkedip merah 450 ms) -> tukik (ke posisi pemain, 110 px/s) -> naik -> patroli (jeda 1,5 detik). Kecepatan patroli dari `ANGKA.kecepatanCamar` (55) dikali pengali kesulitan. Terbang tanpa gravitasi dan tidak menabrak pijakan. Satu injakan dari atas mengalahkannya (+skor musuh); sentuhan lain melukai pemain.
 - `GameScene.js`: grup `camar` dari data level (kunci opsional `camar`, daftar `[x, y, batasKiri, batasKanan]`); memakai `temuMusuh` yang sama dengan kepiting.
 - `tekstur.js`: placeholder `camar` (12x8). `level2.js`: 1 camar di `[640, 40, 560, 760]`.
 - Belum diuji di browser. Perlu dicek: tanda berkedip cukup terlihat, tukikan bisa dihindari, camar tidak menutupi koin/permata di jalur lompat, dan injakan dari atas mudah dilakukan.
 
 ### 2026-11-08 — Claude (hapus nilai cadangan angka koleksi)
-- Branch: `claude/hapus-cadangan-angka` (dari `main` terbaru, setelah PR #17 Codex).
+- Branch: `claude/hapus-cadangan-angka` (PR #18, sudah digabung).
 - `GameScene.js`: konstanta `SKOR_PERMATA` dan `NYAWA_HATI` (dengan `?? 50` dan `?? 1`) dihapus; kini memakai `ANGKA.skorPermata` dan `ANGKA.nyawaHati` langsung.
 - Laporan Codex (dari sesinya, belum tercatat di HANDOFF): `balance.js` sudah memuat `skorPermata: 50`, `nyawaHati: 1`, `kecepatanCamar: 55` beserta tesnya; `npm test` lulus (3 file, 0 gagal). Dua permintaan `[Claude -> Codex]` dihapus karena sudah selesai.
 - Permintaan baru ke Gemini untuk musuh berikutnya (lihat bagian permintaan).
-- Belum diuji di browser.
 
 ### 2026-11-08 — Claude (animasi pemain + sprite koleksi)
-- Branch: `claude/animasi-pemain` (dari `main` terbaru). Menjawab permintaan `[Gemini -> Claude]`.
+- Branch: `claude/animasi-pemain` (PR #16, sudah digabung). Menjawab permintaan `[Gemini -> Claude]`.
 - `GameScene.js`: `player` dimuat dengan `load.spritesheet` (12x16); `permata` dan `hati` masuk daftar `preload`; `buatAnimasi()` membuat `player-idle` (frame 0), `player-walk` (1-2, 6 fps), `player-jump` (3). Dilewati otomatis jika PNG gagal dimuat dan hanya placeholder yang ada.
 - `Player.js`: memilih animasi (udara = lompat, bergerak = jalan, selain itu = diam) dan membalik sprite sesuai arah. Fisika tidak diubah.
 - Belum diuji di browser. Perlu dicek: ukuran `player.png` memang 48x16, kaki tidak "tenggelam" ke lantai (ukuran body masih 12x16), dan arah hadap sprite asli (kalau Gemini menggambar menghadap kiri, arah flip terbalik).
