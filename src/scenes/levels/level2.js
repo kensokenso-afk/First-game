@@ -1,5 +1,6 @@
 // Level 2: Pelabuhan Berkabut. Dermaga lebih rapat, lebih banyak kepiting.
 // Selisih tinggi antar pijakan dijaga <= 40 px (lompat maksimal ~56 px).
+// camar [x, y, batasKiri, batasKanan]: terbang di ketinggian y, menukik ke pemain.
 export default {
   nama: 'Pelabuhan Berkabut',
   lebar: 1100,
@@ -18,5 +19,6 @@ export default {
     [240, 130, 190, 280], [420, 130, 340, 500], [600, 130, 570, 700],
     [880, 130, 850, 940], [1000, 130, 970, 1060]
   ],
+  camar: [[640, 40, 560, 760]],
   benderaX: 1060
 };

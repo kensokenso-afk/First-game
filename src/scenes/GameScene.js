@@ -1,6 +1,7 @@
 import Background from '../background/Background.js';
 import Player from '../entities/Player.js';
 import Kepiting from '../entities/Kepiting.js';
+import Camar from '../entities/Camar.js';
 import { buatTekstur } from '../entities/tekstur.js';
 import { ANGKA, hitungSkor, hitungNyawa } from '../config/balance.js';
 import { ambilTingkatKesulitan } from '../config/difficulty.js';
@@ -9,10 +10,11 @@ import { DAFTAR_LEVEL } from './levels/index.js';
 
 // Sprite pixel dari Gemini (assets/). Kunci sama dengan placeholder di tekstur.js.
 // 'player' dimuat terpisah sebagai spritesheet (lihat preload).
+// 'camar' belum ada PNG-nya: sementara memakai placeholder kode.
 const SPRITE = ['peti', 'papan', 'koin', 'kepiting', 'bendera', 'permata', 'hati'];
 
 // Area: Claude (logika game). Latar belakang ada di src/background/ (area Gemini).
-// Tujuan tiap level: ambil koin, injak kepiting, capai bendera.
+// Tujuan tiap level: ambil koin, injak musuh, capai bendera.
 export default class GameScene extends Phaser.Scene {
   constructor() {
     super('GameScene');
@@ -83,6 +85,7 @@ export default class GameScene extends Phaser.Scene {
     this.physics.add.overlap(this.player, this.permata, (p, b) => this.ambilPermata(b));
     this.physics.add.overlap(this.player, this.hati, (p, b) => this.ambilHati(b));
     this.physics.add.overlap(this.player, this.musuh, (p, m) => this.temuMusuh(p, m));
+    this.physics.add.overlap(this.player, this.camar, (p, m) => this.temuMusuh(p, m));
     this.physics.add.overlap(this.player, this.bendera, () => this.selesaiLevel());
 
     if (this.scene.get('HudScene')) {
@@ -130,6 +133,12 @@ export default class GameScene extends Phaser.Scene {
     this.musuh = this.physics.add.group();
     d.musuh.forEach(([x, y, kiri, kanan]) => {
       this.musuh.add(new Kepiting(this, x, y, kiri, kanan, this.kesulitan.pengaliMusuh));
+    });
+
+    // Camar (opsional per level): terbang, tidak menabrak pijakan, tanpa gravitasi
+    this.camar = this.physics.add.group({ allowGravity: false });
+    (d.camar ?? []).forEach(([x, y, kiri, kanan]) => {
+      this.camar.add(new Camar(this, x, y, kiri, kanan, dekAtas - 6, this.kesulitan.pengaliMusuh));
     });
 
     this.bendera = this.physics.add.staticImage(d.benderaX, dekAtas - 16, 'bendera');
@@ -237,5 +246,6 @@ export default class GameScene extends Phaser.Scene {
     if (this.berhenti) return;
     this.player.update(waktu);
     this.musuh.getChildren().forEach((m) => m.update());
+    this.camar.getChildren().forEach((c) => c.update(waktu, this.player));
   }
 }
